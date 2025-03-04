@@ -7,9 +7,9 @@ pipeline {
       }
     }
 
-    stage('check out') {
+    stage('checkout') {
       steps {
-        git checkout 'https://github.com/blvsnprasad/simpleProject'
+        git 'https://github.com/blvsnprasad/simpleProject'
       }
     }
   }
