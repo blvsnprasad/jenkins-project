@@ -1,16 +1,20 @@
 pipeline {
-  agent any
-  stages {
-    stage('go to project path') {
-      steps {
-        cd 'C:/Users/Nagendra.Prasad/VSCodeProjects'
-      }
-    }
+    agent any
+    stages {
+        stage('Go to Project Path') {
+            steps {
+                // Use the 'dir' block to specify the working directory
+                dir('C:/Users/Nagendra.Prasad/VSCodeProjects') {
+                    echo "Now in the project path"
+                }
+            }
+        }
 
-    stage('checkout') {
-      steps {
-        git 'https://github.com/blvsnprasad/simpleProject'
-      }
+        stage('Checkout') {
+            steps {
+                // Checkout the Git repository
+                git 'https://github.com/blvsnprasad/simpleProject'
+            }
+        }
     }
-  }
 }
