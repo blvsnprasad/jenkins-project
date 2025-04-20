@@ -18,7 +18,7 @@ pipeline {
         )
     }
     environment {
-        buildNumber="v1",
+        buildNumber="v1"
         buildPrefixName="jenkins"
     }
     stages {
@@ -26,24 +26,24 @@ pipeline {
             agent none
             steps {
                 env.envDotVariable="envDotValue"
-                echo "show - project - ${project}"
-                echo "show - isTrue - ${isTrue}"
-                echo "show - workEnv - ${workEnv}"
-                echo "show - buildNumber - ${buildNumber}"
-                echo "show - buildPrefixName - ${buildPrefixName}"
-                echo "show - envDotValue - ${envDotValue}"
+                echo "show - project - ${params.project}"
+                echo "show - isTrue - ${params.isTrue}"
+                echo "show - workEnv - ${params.workEnv}"
+                echo "show - buildNumber - ${env.buildNumber}"
+                echo "show - buildPrefixName - ${env.buildPrefixName}"
+                echo "show - envDotVariable - ${env.envDotVariable}"
             }
             
             steps {
                 script {
                     def buildDate = new Date().format('yyyyMMdd')
-                    echo "script - project - ${project}"
-                    echo "script - isTrue - ${isTrue}"
-                    echo "script - workEnv - ${workEnv}"
-                    echo "script - buildNumber - ${buildNumber}"
-                    echo "script - buildPrefixName - ${buildPrefixName}"
+                    echo "script - project - ${params.project}"
+                    echo "script - isTrue - ${params.isTrue}"
+                    echo "script - workEnv - ${params.workEnv}"
+                    echo "script - buildNumber - ${env.buildNumber}"
+                    echo "script - buildPrefixName - ${env.buildPrefixName}"
+                    echo "script - envDotVariable - ${env.envDotVariable}"
                     echo "script - buildDate - ${buildDate}"
-                    echo "script - envDotValue - ${envDotValue}"
                 }
             }
             
@@ -51,12 +51,12 @@ pipeline {
     }
     
     post {
-        echo "post - project - ${project}"
-        echo "post - isTrue - ${isTrue}"
-        echo "post - workEnv - ${workEnv}"
-        echo "post - buildNumber - ${buildNumber}"
-        echo "post - buildPrefixName - ${buildPrefixName}"
-        echo "post - envDotValue - ${envDotValue}"
+        echo "post - project - ${params.project}"
+        echo "post - isTrue - ${params.isTrue}"
+        echo "post - workEnv - ${params.workEnv}"
+        echo "post - buildNumber - ${env.buildNumber}"
+        echo "post - buildPrefixName - ${env.buildPrefixName}"
+        echo "post - envDotVariable - ${env.envDotVariable}"
     }
     
 }
