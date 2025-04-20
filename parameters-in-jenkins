@@ -7,7 +7,7 @@ pipeline {
             description: "project name"
         )
         booleanParam(
-            name: isTrue,
+            name: isProd,
             defaultValue: false,
             description: "boolean value"
         )
@@ -22,23 +22,26 @@ pipeline {
         buildPrefixName="jenkins"
     }
     stages {
-        stage ("show params") {
+        stage("show params") {
             agent none
             steps {
-                // env.envDotVariable = "envDotValue"
-                echo "show - project - ${params.project}"
-                echo "show - isTrue - ${params.isTrue}"
-                echo "show - workEnv - ${params.workEnv}"
-                echo "show - buildNumber - ${env.buildNumber}"
-                echo "show - buildPrefixName - ${env.buildPrefixName}"
-                // echo "show - envDotVariable - ${env.envDotVariable}"
-            }
-            
+                script { 
+                    // env.envDotVariable = "envDotValue"
+                    echo "show - project - ${params.project}"
+                    echo "show - isProd - ${params.isProd}"
+                    echo "show - workEnv - ${params.workEnv}"
+                    echo "show - buildNumber - ${env.buildNumber}"
+                    echo "show - buildPrefixName - ${env.buildPrefixName}"
+                    // echo "show - envDotVariable - ${env.envDotVariable}"
+                }
+            }    
+        }
+        stage("stage 2 param") {
             steps {
                 script {
                     def buildDate = new Date().format('yyyyMMdd')
                     echo "script - project - ${params.project}"
-                    echo "script - isTrue - ${params.isTrue}"
+                    echo "script - isProd - ${params.isProd}"
                     echo "script - workEnv - ${params.workEnv}"
                     echo "script - buildNumber - ${env.buildNumber}"
                     echo "script - buildPrefixName - ${env.buildPrefixName}"
@@ -46,19 +49,19 @@ pipeline {
                     echo "script - buildDate - ${buildDate}"
                 }
             }
-            
         }
     }
     
     post {
         always {
-            echo "post - project - ${params.project}"
-            echo "post - isTrue - ${params.isTrue}"
-            echo "post - workEnv - ${params.workEnv}"
-            echo "post - buildNumber - ${env.buildNumber}"
-            echo "post - buildPrefixName - ${env.buildPrefixName}"
-            // echo "post - envDotVariable - ${env.envDotVariable}"   
+            script {
+                echo "post - project - ${params.project}"
+                echo "post - isProd - ${params.isProd}"
+                echo "post - workEnv - ${params.workEnv}"
+                echo "post - buildNumber - ${env.buildNumber}"
+                echo "post - buildPrefixName - ${env.buildPrefixName}"
+                // echo "post - envDotVariable - ${env.envDotVariable}"
+            }
         }
-    }
-    
+    }   
 }
