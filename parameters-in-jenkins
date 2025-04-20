@@ -1,3 +1,59 @@
 pipeline {
-
+    agent none
+    parameters {
+        string(
+            name: "project",
+            defaultValue: "paramtersInJenkins"
+            description: "project name")
+        booleanParam(
+            name: isTrue,
+            defaultValue: false,
+            description: "boolean value")
+        choice(
+            name: workEnv,
+            choices: ["dev","prod","preProd","testing"],
+            description: workEnv)
+    }
+    environment {
+        buildNumber="v1",
+        buildPrefixName="jenkins"
+    }
+    stages {
+        stage ("show params") {
+            agent none
+            steps {
+                env.envDotVariable="envDotValue"
+                echo "show - project - ${project}"
+                echo "show - isTrue - ${isTrue}"
+                echo "show - workEnv - ${workEnv}"
+                echo "show - buildNumber - ${buildNumber}"
+                echo "show - buildPrefixName - ${buildPrefixName}"
+                echo "show - envDotValue - ${envDotValue}"
+            }
+            
+            steps {
+                script {
+                    def buildDate = new Date().format('yyyyMMdd')
+                    echo "script - project - ${project}"
+                    echo "script - isTrue - ${isTrue}"
+                    echo "script - workEnv - ${workEnv}"
+                    echo "script - buildNumber - ${buildNumber}"
+                    echo "script - buildPrefixName - ${buildPrefixName}"
+                    echo "script - buildDate - ${buildDate}"
+                    echo "script - envDotValue - ${envDotValue}"
+                }
+            }
+            
+        }
+    }
+    
+    post {
+        echo "post - project - ${project}"
+        echo "post - isTrue - ${isTrue}"
+        echo "post - workEnv - ${workEnv}"
+        echo "post - buildNumber - ${buildNumber}"
+        echo "post - buildPrefixName - ${buildPrefixName}"
+        echo "post - envDotValue - ${envDotValue}"
+    }
+    
 }
