@@ -25,7 +25,7 @@ pipeline {
         stage ("show params") {
             agent none
             steps {
-                env.envDotVariable="envDotValue"
+                env.envDotVariable = "envDotValue"
                 echo "show - project - ${params.project}"
                 echo "show - isTrue - ${params.isTrue}"
                 echo "show - workEnv - ${params.workEnv}"
@@ -51,12 +51,14 @@ pipeline {
     }
     
     post {
-        echo "post - project - ${params.project}"
-        echo "post - isTrue - ${params.isTrue}"
-        echo "post - workEnv - ${params.workEnv}"
-        echo "post - buildNumber - ${env.buildNumber}"
-        echo "post - buildPrefixName - ${env.buildPrefixName}"
-        echo "post - envDotVariable - ${env.envDotVariable}"
+        always {
+            echo "post - project - ${params.project}"
+            echo "post - isTrue - ${params.isTrue}"
+            echo "post - workEnv - ${params.workEnv}"
+            echo "post - buildNumber - ${env.buildNumber}"
+            echo "post - buildPrefixName - ${env.buildPrefixName}"
+            echo "post - envDotVariable - ${env.envDotVariable}"   
+        }
     }
     
 }
