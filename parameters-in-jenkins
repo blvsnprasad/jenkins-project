@@ -25,13 +25,13 @@ pipeline {
         stage ("show params") {
             agent none
             steps {
-                env.envDotVariable = "envDotValue"
+                // env.envDotVariable = "envDotValue"
                 echo "show - project - ${params.project}"
                 echo "show - isTrue - ${params.isTrue}"
                 echo "show - workEnv - ${params.workEnv}"
                 echo "show - buildNumber - ${env.buildNumber}"
                 echo "show - buildPrefixName - ${env.buildPrefixName}"
-                echo "show - envDotVariable - ${env.envDotVariable}"
+                // echo "show - envDotVariable - ${env.envDotVariable}"
             }
             
             steps {
@@ -42,7 +42,7 @@ pipeline {
                     echo "script - workEnv - ${params.workEnv}"
                     echo "script - buildNumber - ${env.buildNumber}"
                     echo "script - buildPrefixName - ${env.buildPrefixName}"
-                    echo "script - envDotVariable - ${env.envDotVariable}"
+                    // echo "script - envDotVariable - ${env.envDotVariable}"
                     echo "script - buildDate - ${buildDate}"
                 }
             }
@@ -57,7 +57,7 @@ pipeline {
             echo "post - workEnv - ${params.workEnv}"
             echo "post - buildNumber - ${env.buildNumber}"
             echo "post - buildPrefixName - ${env.buildPrefixName}"
-            echo "post - envDotVariable - ${env.envDotVariable}"   
+            // echo "post - envDotVariable - ${env.envDotVariable}"   
         }
     }
     
