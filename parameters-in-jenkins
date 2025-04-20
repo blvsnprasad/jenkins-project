@@ -4,15 +4,18 @@ pipeline {
         string(
             name: "project",
             defaultValue: "paramtersInJenkins"
-            description: "project name")
+            description: "project name"
+        )
         booleanParam(
             name: isTrue,
             defaultValue: false,
-            description: "boolean value")
+            description: "boolean value"
+        )
         choice(
             name: workEnv,
             choices: ["dev","prod","preProd","testing"],
-            description: workEnv)
+            description: workEnv
+        )
     }
     environment {
         buildNumber="v1",
