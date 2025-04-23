@@ -1,5 +1,8 @@
 pipeline {
     agent none
+    triggers {
+        cron('2 2 28 12 *')
+    }
     parameters {
         string(
             name: "project",
@@ -7,35 +10,43 @@ pipeline {
             description: "project name"
         )
         booleanParam(
-            name: isProd,
+            name: "isProd",
             defaultValue: false,
             description: "boolean value"
         )
         choice(
-            name: workEnv,
+            name: "workEnv",
             choices: ["dev","prod","preProd","testing"],
-            description: workEnv
+            description: "workEnv"
         )
     }
     environment {
         buildNumber="v1"
         buildPrefixName="jenkins"
+        buildDate=getBuildDate()
+        buildHour=getBuildHour()
     }
     stages {
         stage("show params") {
             agent none
             steps {
                 script { 
-                    // env.envDotVariable = "envDotValue"
+                    env.envDotVariable = "envDotValue"
                     echo "show - project - ${params.project}"
                     echo "show - isProd - ${params.isProd}"
                     echo "show - workEnv - ${params.workEnv}"
                     echo "show - buildNumber - ${env.buildNumber}"
                     echo "show - buildPrefixName - ${env.buildPrefixName}"
-                    // echo "show - envDotVariable - ${env.envDotVariable}"
+                    //env.envDotVariable = "envDotValue"
+                    echo "show - envDotVariable - ${env.envDotVariable}"
+                    echo "show - buildDate - ${env.buildDate}"
+                    echo "show - buildHour - ${env.buildHour}"
+                    printSomething(buildNumber, isProd)
                 }
-            }    
+                printSomething(buildNumber, isProd)
+            }
         }
+        
         stage("stage 2 param") {
             steps {
                 script {
@@ -45,8 +56,10 @@ pipeline {
                     echo "script - workEnv - ${params.workEnv}"
                     echo "script - buildNumber - ${env.buildNumber}"
                     echo "script - buildPrefixName - ${env.buildPrefixName}"
-                    // echo "script - envDotVariable - ${env.envDotVariable}"
+                    echo "script - envDotVariable - ${env.envDotVariable}"
                     echo "script - buildDate - ${buildDate}"
+                    echo "script - buildHour - ${env.buildHour}"
+                    printSomething(buildNumber, isProd)
                 }
             }
         }
@@ -60,8 +73,31 @@ pipeline {
                 echo "post - workEnv - ${params.workEnv}"
                 echo "post - buildNumber - ${env.buildNumber}"
                 echo "post - buildPrefixName - ${env.buildPrefixName}"
-                // echo "post - envDotVariable - ${env.envDotVariable}"
+                echo "post - envDotVariable - ${env.envDotVariable}"
+                echo "post - buildDate - ${buildDate}"
+                echo "post - buildHour - ${env.buildHour}"
+                printSomething(buildNumber, isProd)
             }
+            
         }
-    }   
+    }
+    
+}
+
+def getBuildHour() {
+    return new Date().getMinutes()
+}
+
+def getBuildDate() {
+    // Use SimpleDateFormat which is allowed in Jenkins sandbox
+    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
+    return sdf.format(new Date())
+}
+
+def printSomething (value1, value2) {
+    def functionVariable = "hi this is functionVariable"
+    script {
+        echo "something - value1=${value1} - value2=${value2}"
+        echo "something - functionVariable=${functionVariable}"
+    }
 }
