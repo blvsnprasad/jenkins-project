@@ -1,18 +1,9 @@
 pipeline {
     agent none
-    triggers {
-        cron('2 2 28 12 *')
-    }
     parameters {
-        string(
-            name: "project",
-            defaultValue: "paramtersInJenkins",
-            description: "project name"
-        )
         booleanParam(
             name: "isProd",
-            defaultValue: false,
-            description: "boolean value"
+            defaultValue: true
         )
         choice(
             name: "workEnv",
@@ -21,45 +12,110 @@ pipeline {
         )
     }
     environment {
-        buildNumber="v1"
-        buildPrefixName="jenkins"
         buildDate=getBuildDate()
         buildHour=getBuildHour()
     }
     stages {
-        stage("show params") {
+        stage("show agent info prod") {
             agent none
+            when { expression { params.isProd } }
             steps {
                 script { 
-                    env.envDotVariable = "envDotValue"
-                    echo "show - project - ${params.project}"
-                    echo "show - isProd - ${params.isProd}"
-                    echo "show - workEnv - ${params.workEnv}"
-                    echo "show - buildNumber - ${env.buildNumber}"
-                    echo "show - buildPrefixName - ${env.buildPrefixName}"
-                    //env.envDotVariable = "envDotValue"
-                    echo "show - envDotVariable - ${env.envDotVariable}"
-                    echo "show - buildDate - ${env.buildDate}"
-                    echo "show - buildHour - ${env.buildHour}"
-                    printSomething(buildNumber, isProd)
+                    showAgentInfo("stage-script-when-prod")
                 }
-                printSomething(buildNumber, isProd)
             }
         }
         
-        stage("stage 2 param") {
+        stage("show agent info ! prod") {
+            when { expression { !params.isProd } }
             steps {
                 script {
-                    def buildDate = new Date().format('yyyyMMdd')
-                    echo "script - project - ${params.project}"
-                    echo "script - isProd - ${params.isProd}"
-                    echo "script - workEnv - ${params.workEnv}"
-                    echo "script - buildNumber - ${env.buildNumber}"
-                    echo "script - buildPrefixName - ${env.buildPrefixName}"
-                    echo "script - envDotVariable - ${env.envDotVariable}"
-                    echo "script - buildDate - ${buildDate}"
-                    echo "script - buildHour - ${env.buildHour}"
-                    printSomething(buildNumber, isProd)
+                    showAgentInfo("stage-script-exclametory check")
+                }
+            }
+        }
+        
+        stage("show agent info false equal prod") {
+            when { expression { return params.isProd == false } }
+            steps {
+                script {
+                    showAgentInfo("stage-script-false-equal check")
+                }
+            }
+        }
+        
+        stage("show agent info false ! equal prod") {
+            when { expression { return params.isProd != false } }
+            steps {
+                script {
+                    showAgentInfo("stage-script-false-!-equal check")
+                }
+            }
+        }
+        
+        stage("show agent info not-expression prod") {
+            when { not { expression { params.isProd } } }
+            steps {
+                script {
+                    showAgentInfo("stage-script-not-expression check")
+                }
+            }
+        }
+        
+        stage("show agent info not-not-expression prod") {
+            when { not { not { expression { params.isProd } } } }
+            steps {
+                script {
+                    showAgentInfo("stage-script-not-not-expression check")
+                }
+            }
+        }
+        
+        stage("show agent info if prod") {
+            steps {
+                script {
+                    if(params.isProd) {
+                        showAgentInfo("stage-script-isProd-if check")
+                        echo "stage-script-isProd-if-buildDate - ${env.buildDate} - dateType - ${env.buildDate.class}"
+                        echo "stage-script-isProd-if-buildHour - ${env.buildHour} - dateType - ${env.buildHour.class}"
+                        if(env.buildHour.toInteger() < 10) {
+                            showAgentInfo("stage-script-isProd-if-buildHour-if check")
+                        }
+                    } else {
+                        showAgentInfo("stage-script-isProd-else check")
+                        echo "stage-script-isProd-else-buildDate - ${env.buildDate}"
+                        echo "stage-script-isProd-else-buildHour - ${env.buildHour}"
+                        if(env.buildHour.toInteger() < 10) {
+                            showAgentInfo("stage-script-isProd-else-buildHour-if check")
+                        }
+                    }
+                    
+                    if(env.buildHour.toInteger() < 10) {
+                        showAgentInfo("stage-script-buildHour-if check")
+                    } else {
+                        showAgentInfo("stage-script-buildHour-else check")
+                    }
+                    
+                    def productionEnvs = ['dev', 'production']
+                    if(params.workEnv in productionEnvs) {
+                        showAgentInfo("stage-script-workEnv-env-in-if check")
+                    } else {
+                        showAgentInfo("stage-script-workEnv-env-in-else check")
+                    }
+                    
+                    def versions = ["v1", "v2", "v3", "v4","V10"]
+                    if(versions.collect { it.toLowerCase() }.any { it == "v9" }) {
+                        showAgentInfo("stage-script-def-version-equals-if check")
+                    } else {
+                        showAgentInfo("stage-script-def-version-equals-else check")
+                    }
+                    
+                    def servicess = ['auth-service', 'user-service', 'payment-service']
+                    if(servicess.any { it.contains("teeth") }) {
+                        showAgentInfo("stage-script-def-services-contains-if check")
+                    } else {
+                        showAgentInfo("stage-script-def-services-contains-else check")
+                    }
                 }
             }
         }
@@ -68,36 +124,43 @@ pipeline {
     post {
         always {
             script {
-                echo "post - project - ${params.project}"
-                echo "post - isProd - ${params.isProd}"
-                echo "post - workEnv - ${params.workEnv}"
-                echo "post - buildNumber - ${env.buildNumber}"
-                echo "post - buildPrefixName - ${env.buildPrefixName}"
-                echo "post - envDotVariable - ${env.envDotVariable}"
-                echo "post - buildDate - ${buildDate}"
-                echo "post - buildHour - ${env.buildHour}"
-                printSomething(buildNumber, isProd)
+                def builds = [
+                    [id: 1, status: 'SUCCESS'],
+                    [id: 2, status: 'FAILED']
+                ]
+                showAgentInfo("post-script")
+                if(builds.any { it.id == 2.0}) {
+                    showAgentInfo("post-script-complexObject-equals-if")
+                } else {
+                    showAgentInfo("post-script-complexObject-equals-else")
+                }
+                if(builds.any { it.status.toLowerCase().contains("sad".toLowerCase())}) {
+                    showAgentInfo("post-script-complexObject-contains-if")
+                } else {
+                    showAgentInfo("post-script-complexObject-contains-else")
+                }
             }
-            
         }
     }
     
 }
 
 def getBuildHour() {
-    return new Date().getMinutes()
+    def hh = new Date().getHours()
+    echo "get hour - ${hh} - dateType - ${hh.class}"
+    return hh
 }
 
 def getBuildDate() {
     // Use SimpleDateFormat which is allowed in Jenkins sandbox
-    def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
-    return sdf.format(new Date())
+    def sdf = new Date().format("yyyy-MM-dd")
+    echo "get date - ${sdf} - dateType - ${sdf.class}"
+    return sdf
 }
 
-def printSomething (value1, value2) {
-    def functionVariable = "hi this is functionVariable"
-    script {
-        echo "something - value1=${value1} - value2=${value2}"
-        echo "something - functionVariable=${functionVariable}"
-    }
+def showAgentInfo(from) {
+    // echo "${from} - Running on node: ${env.NODE_NAME  ?: 'N/A'}"
+    // echo "${from} - Node labels: ${env.NODE_LABELS  ?: 'N/A'}"
+    // echo "${from} - Workspace path: ${env.WORKSPACE  ?: 'N/A'}"
+    echo "${from} - showing agent"
 }
